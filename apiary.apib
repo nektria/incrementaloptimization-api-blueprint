@@ -5,7 +5,7 @@ FORMAT: 1A
 
 The Incremental Optimization Service of RECS API is designed to elaborate and plan optimized deliveries.
 
-The API is organized in 4 main areas:
+The API is organized in 3 sections:
 - Base Types are defined in the first part, and are made available with requests to validate their elements.
 - Optimization requests aim to provide optimal routes for executing the deliveries.
 - Callbacks are the endpoints that need to be made available in the client.
@@ -144,43 +144,6 @@ An address contains information about a physical address for pick-up and deliver
                 "status": "error",
                 "error": "Unknown warehouse"
             }
-            
-## Area [/areas]    
-
-+ Attributes (object)
-    + `id`: 29 (required, string)
-    + `name`: BCN (optional, string)
-    + `postal_codes` (optional, array)
-
-### Check if an Area is valid [POST /check/area]
-
-    + Attributes (Area)
-    + Body
-
-            {
-                "id" : "11",
-                "name": "BCN",
-                "postal_codes": [
-                    "08001", 
-                    "08002", 
-                    "08003", 
-                    "08004", 
-                    "08005", 
-                    "08006"
-                ]
-            }
-
-+ Response 204
-            
-+ Response 400 (application/json)
-    Invalid Area
-    + Body
-    
-            {
-                "status": "error",
-                "error": "Incorrect postal code"
-            }
-
 
 ## Step [/steps] 
 
@@ -279,7 +242,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
     + span (optional, TimeWindow)
     + status: pending (required, string) shift status
     + main_scenario_status: optimizing (optional) 
-    + warehouse (required, Warehouse) Warehouse covering this shift
+    + wahouse (required, Warehouse) Warehouse covering this shift
     + orders (required, array[string]) list of order ids assigned to this shift
     
 
@@ -302,3 +265,5 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Response 200 (application/json)
     + Attributes 
         + list (array[Route])
+        
+##Group Callbacks
