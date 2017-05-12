@@ -307,7 +307,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 
 + Request (application/json)
 + Attributes
-    + action: closed (required, string)
+    + action: close (required, string)
         
 + Response 202 (application/json)
     
@@ -323,3 +323,44 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
         + list (array[Route])
         
 ##Group Callbacks
+
+### Incremental Optimization Performed [PUT /shifts/{shift_id}]
+
++ Parameters
+    + shift_id (required, string)
+
++ Request (application/json)
++ Attributes
+    + routes (array, required) 
+        + route_id (required, string)
+        + orders (required, array[string])
+        
++ Response 202 (application/json)
+    
++ Response 404
+
+### Optimization closed [PATCH /shifts/{shift_id}]
+
++ Parameters
+    + shift_id (required, string)
+
++ Request (application/json)
++ Attributes
+    + action: close (required, string)
+
++ Response 200 (application/json)
+    
++ Response 404
+
+### Assign an Order to a Route [PATCH /shifts/{shift_id}/route/{route_id}/order/{order_id}]
+
++ Parameters
+    + shift_id (required, string)
+
++ Request (application/json)
++ Attributes
+    + action: assign (required, string)
+        
++ Response 202 (application/json)
+    
++ Response 404
