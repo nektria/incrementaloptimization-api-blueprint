@@ -205,15 +205,12 @@ An address contains information about a physical address for pick-up and deliver
 ## Order [/orders]    
 
 + Attributes (object)
-    + `id`: 2745 (required, string)
+    + `id`: 43bcb4c5-47d5-4cff-9331-f48d381501bd (required, string)
     + order_number: AA123456 (required, string)
     + products (required, array[Product])
-    + origin (optional, Address)
     + destination (required, Address)
-    + `delivery_windows` (required, array[TimeWindow])
-    + shopper (optional, Shopper) - information about the shopper
-    + shift_id (optional, string)
-    + status (required, string)
+    + `delivery_window` (required, array[TimeWindow])
+    + shopper (required, Shopper) - information about the shopper
     + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
     
 
@@ -227,25 +224,59 @@ An address contains information about a physical address for pick-up and deliver
     
             {
                 "status": "error",
-                "error": "The order is invalid"
+                "error": "The destination is compulsory"
             }
     
+### Create an Order / Incremental optimization Request [POST /shifts/{shift_id}/orders]
++ Parameters
+    + shift_id (required, string)
+
++ Request (application/json)
++ Attributes (Order)
+    
++ Response 201 (application/json)
+    + Headers
+    
+            Location: /orders/{order_id}
+
++ Response 400
+    Returned if there is any parameter missing or with wrong type or format
+    + Body
++ Response 409
+    Returned if there is already an order with the same order_number
+    + Body
++ Response 500
+    Returned if an error occurred storing the order
+    + Body
 
 ## Shift [/shifts]
 
 A Shift groups the orders of a specific warehouse, and has relationships with the resources that are assigned to fullfill these orders.
 
 + Attributes (object)
-    + id: 123 (required, string) Unique shift identifier
+    + id: d6b24e46-1ae0-4833-a22d-ad3e6399a8ad (required, string) Unique shift identifier
     + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
-    + `loading_window` (required, TimeWindow)
+    + `loading_window` (optional, TimeWindow)
     + span (optional, TimeWindow)
     + status: pending (required, string) shift status
     + main_scenario_status: optimizing (optional) 
-    + wahouse (required, Warehouse) Warehouse covering this shift
+    + warehouse (required, Warehouse) Warehouse covering this shift
     + orders (required, array[string]) list of order ids assigned to this shift
     
+### Create a Shift / Start Incremental Optimization [POST /shifts]/incremental]
 
++ Request (application/json)
+
++ Attributes
+    + id: d6b24e46-1ae0-4833-a22d-ad3e6399a8ad (required, string) Unique shift identifier
+    + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
+    + span (required, TimeWindow)
+    + warehouse_id: ee1a43c0-c872-4480-abc1-4115b8aeeb80 (required, string) id of the warehouse managing this shift
+    + orders (optional, array[Order]) Orders for which we optimize deliveries
+    
++ Response 201 (application/json)
+        
+        
 ### Close a Shift [PATCH /shifts/{shift_id}/close]
 
 + Parameters
