@@ -227,12 +227,18 @@ An address contains information about a physical address for pick-up and deliver
                 "error": "The destination is compulsory"
             }
     
-### Create an Order / Incremental optimization Request [POST /shifts/{shift_id}/orders]
+### Create an Order - Incremental optimization Request [PUT /shifts/incremental/{shift_id}/orders/{order_id}]
 + Parameters
     + shift_id (required, string)
-
+    + order_id (required, string)
+    
 + Request (application/json)
-+ Attributes (Order)
++ Attributes 
+    + products (required, array[Product])
+    + destination (required, Address)
+    + `delivery_window` (required, array[TimeWindow])
+    + shopper (required, Shopper) - information about the shopper
+    + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
     
 + Response 201 (application/json)
     + Headers
@@ -248,6 +254,19 @@ An address contains information about a physical address for pick-up and deliver
 + Response 500
     Returned if an error occurred storing the order
     + Body
+
+
+### Block an Order [PATCH /shifts/incremental/{shift_id}/orders/{order_id}]
++ Parameters
+    + shift_id (required, string)
+    + order_id (required, string)
+
++ Request (application/json)
++ Attributes
+    + action: block (required, string)
+    
++ Response 202 (application/json)
+
 
 ## Shift [/shifts]
 
@@ -277,7 +296,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Response 201 (application/json)
         
         
-### Close a Shift [PATCH /shifts/{shift_id}/close]
+### Close a Shift [PATCH /shifts/incremental/{shift_id}/close]
 
 + Parameters
     + shift_id (required, string)
@@ -288,7 +307,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
     
 + Response 404
 
-### List Shift Routes [GET /shifts/{shift_id}/routes]
+### List Shift Routes [GET /shifts/incremental/{shift_id}/routes]
 
 + Parameters
     + shift_id (required, string)
