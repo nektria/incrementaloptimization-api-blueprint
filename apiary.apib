@@ -105,28 +105,6 @@ An address contains information about a physical address for pick-up and deliver
                 "error": "The shopper misses name information"
             }
 
-## Capacity [/check/capacity]
-
-+ Attributes (object)
-    + type: dry (required, string) - dry or cold, describes the type of product it can hold
-    + quantity: 8 (required, number) - describes the number of products it can hold
-
-### Check if a Capacity is valid [POST /check/capacity]
-+ Attributes (Capacity)
-
-+ Response 204
-            
-+ Response 400 (application/json)
-    Invalid Product / malformatted
-    + Body
-    
-            {
-                "status": "error",
-                "error": "The capacity is missing quantity information"
-            }
-
-
-
 ## TimeWindow [/time_windows] 
 
 + Attributes (object)
@@ -147,47 +125,24 @@ An address contains information about a physical address for pick-up and deliver
                 "error": "start time is earlier than end time"
             }
 
-## VehicleCategory [/vehicle_categories]    
+## Warehouse [/warehouse]   
 
 + Attributes (object)
-    + `name`: TRUCK_3500 (required, string) name of the vehicle category
-    
+    + `id`: 29 (required, string) warehouse uuid
+    + `area`: BARCELONA (optional, string)
+    + location (required, Address)
 
-### Check if a Vehicle Category is valid [POST /check/vehicle_category]
-+ Attributes (VehicleCategory)
+### Check if a Warehouse is valid [POST /check/warehouse]
++ Attributes (Warehouse)
 + Response 204
             
 + Response 400 (application/json)
-    Invalid VehicleCategory
+    Invalid Warehouse
     + Body
     
             {
                 "status": "error",
-                "error": "Unknown option speed"
-            }
-
-## Vehicle [/vehicle]   
-
-+ Attributes (object)
-    + `vehicle_number`: BCN_VAN_1 (optional, string)
-    + capacity (required, array[Capacity]) - list describing transportation areas of the vehicle
-    + type: van (optional, string)
-    + options (optional) 
-        + efficiency: 1.2 (optional, number)
-        + helpers: 1 (optional, number)
-    + `vehicle_category`: TRUCK_3500 (required, string) name of the vehicle category related
-
-### Check if a Vehicle is valid [POST /check/vehicle]
-+ Attributes (Vehicle)
-+ Response 204
-            
-+ Response 400 (application/json)
-    Invalid Vehicle
-    + Body
-    
-            {
-                "status": "error",
-                "error": "Unknown option speed"
+                "error": "Unknown warehouse"
             }
             
 ## Area [/areas]    
@@ -258,10 +213,7 @@ An address contains information about a physical address for pick-up and deliver
 
 + Attributes (object)
     + `id`: 783 (required, string)
-    + origin (required, Address)
-    + `loading_window` (required, TimeWindow)
     + `execution_window` (required, TimeWindow)
-    + vehicle (required, Vehicle)
     + itinerary (required, array[Step])
     + status: done (required, string)
 
@@ -277,6 +229,13 @@ An address contains information about a physical address for pick-up and deliver
                 "status": "error",
                 "error": "Unknown vehicle BCN_VAN_15"
             }
+
+### Get a Route [GET /routes/{route_id}]
++ Parameters
+    + route_id (required, string) - The Route id
++ Response 200 (application/json)
+    + Attributes (Route)
+
 
 ##Group Optimization
 
@@ -311,20 +270,16 @@ An address contains information about a physical address for pick-up and deliver
 
 ## Shift [/shifts]
 
-A Shift groups the orders of a specific time range and area, and has relationships with the resources that are assigned to fullfill these orders.
+A Shift groups the orders of a specific warehouse, and has relationships with the resources that are assigned to fullfill these orders.
 
 + Attributes (object)
     + id: 123 (required, string) Unique shift identifier
     + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
-    + span (required, TimeWindow)
+    + `loading_window` (required, TimeWindow)
+    + span (optional, TimeWindow)
     + status: pending (required, string) shift status
-    + area (required, Area) Area covered by this shift
-    + fleet (required, array[Vehicle]) list of vehicles assigned to this shift
-    + main_scenario (optional) 
-        + status (required, string) status of the main scenario - created, optimizing, optimized, ongoing or done
-        + selected_vehicles (required, array[string]) list of vehicle ids selected for this scenario
-    + other_scenarios (optional, array[string]) list of ids of scenarios beside the main senario
-    + time_slots (required, array[TimeWindow]) delivery time windows proposed to the shopper
+    + main_scenario_status: optimizing (optional) 
+    + warehouse (required, Warehouse) Warehouse covering this shift
     + orders (required, array[string]) list of order ids assigned to this shift
     
 
@@ -335,158 +290,15 @@ A Shift groups the orders of a specific time range and area, and has relationshi
 
 + Request (application/json)
         
-+ Response 200 (application/json)
-    + Attributes
-        + id: 123 (required, string) Unique shift identifier
-        + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
-        + span (required)
-            + `start_time`: `2016-03-29T15:19:00+01:00` (required, string) ISO8601 time at which the window starts
-            + `end_time`: `2016-03-29T15:37:00+01:00` (required, string) ISO8601 time at which the window ends    
-        + status: pending (required, string) shift status
-        + area (required, Area) Area covered by this shift
-        + fleet (required, array[Vehicle]) list of vehicles assigned to this shift
-        + main_scenario (optional) 
-            + status (required, string) status of the main scenario - created, optimizing, optimized, ongoing or done
-            + selected_vehicles (required, array[string]) list of vehicle ids selected for this scenario
-        + other_scenarios (optional, array[string]) list of ids of scenarios beside the main senario
-        + time_slots (required, array[TimeWindow]) delivery time windows proposed to the shopper
-        + orders (required, array[string]) list of order ids assigned to this shift    
-    + Body
-    
-            {
-                "span":
-                {
-                    "start_time": "2016-03-17T15:00:00+0100",
-                    "end_time": "2016-03-17T23:00:00+0100"
-                },
-                "status": "closed",
-                "area": {
-                    "id": "59",
-                    "name": "BCN"
-                },
-                "fleet":
-                [
-                    {
-                        "vehicle_number": "BCN_VAN_1",
-                        "capacities" : 
-                        [
-                            {
-                                "type": "dry",
-                                "quantity": 30
-                            },
-                            {
-                                "type": "cold",
-                                "quantity": 30
-                            }
-                        ],
-                        "vehicle_category": "TRUCK_3500"
-                    },
-                    {
-                        "vehicle_number": "BCN_VAN_2",
-                        "capacities" : 
-                        [
-                            {
-                                "type": "dry",
-                                "quantity": 30
-                            },
-                            {
-                                "type": "cold",
-                                "quantity": 30
-                            }
-                        ],
-                        "options":
-                        {
-                            "helpers": 1
-                        },
-                        "vehicle_category": "TRUCK_3500"
-                    }
-                ],
-                "time_slots":
-                [
-                    {
-                        "start_time": "2016-03-17T15:00:00+0100",
-                        "end_time": "2016-03-17T27:00:00+0100"
-                    },
-                    {
-                        "start_time": "2016-03-17T16:00:00+0100",
-                        "end_time": "2016-03-17T28:00:00+0100"
-                    },
-                    {
-                        "start_time": "2016-03-17T16:00:00+0100",
-                        "end_time": "2016-03-17T21:00:00+0100"
-                    }
-                ],
-                "orders":["324", "309", "343"]
-            }
-    
++ Response 202 (application/json)
     
 + Response 404
 
+### List Shift Routes [GET /shifts/{shift_id}/routes]
 
-### Get Shift Roadmap [GET /shifts/{shift_id}/roadmap]
-        
++ Parameters
+    + shift_id (required, string)
+    
 + Response 200 (application/json)
-        
-        {
-            "unreached_orders": ["5732", "5749"],
-            "unused_vehicles": [],
-            "routes": 
-            [
-                {
-                    "id": 7654,
-                    "delivery_window": 
-                    {
-                        "start_time": "2016-03-17T09:00:00+0100",
-                        "end_time": "2016-03-17T12:15:00+0100"
-                    },
-                    "vehicle": 
-                    {
-                        "vehicle_number": "BCN_VAN_1",
-                        "capacities" : 
-                        [
-                            {
-                                "type": "dry",
-                                "quantity": 30
-                            },
-                            {
-                                "type": "cold",
-                                "quantity": 30
-                            }
-                        ],
-                        "vehicle_category": "TRUCK_3500"
-                    }
-                },
-                {
-                    "id": 7655,
-                    "delivery_window": 
-                    {
-                        "start_time": "2016-03-17T09:10:00+0100",
-                        "end_time": "2016-03-17T11:45:00+0100"
-                    },
-                    "vehicle": 
-                    {
-                        "vehicle_number": "BCN_VAN_2",
-                        "capacities" : 
-                        [
-                            {
-                                "type": "dry",
-                                "quantity": 30
-                            },
-                            {
-                                "type": "cold",
-                                "quantity": 30
-                            }
-                        ],
-                        "options":
-                        {
-                            "helpers": 1
-                        },
-                        "vehicle_category": "TRUCK_3500"
-                    }
-                }
-            ]
-        }
-        
-+ Response 404
-
-##Group Callbacks
+    + Attributes 
+        + list (array[Route])
