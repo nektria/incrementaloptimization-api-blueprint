@@ -1,0 +1,492 @@
+FORMAT: 1A
+
+# Nektria Incremental optimization
+
+
+The Incremental Optimization Service of RECS API is designed to elaborate and plan optimized deliveries.
+
+The API is organized in 4 main areas:
+- Base Types are defined in the first part, and are made available with requests to validate their elements.
+- Optimization requests aim to provide optimal routes for executing the deliveries.
+- Callbacks are the endpoints that need to be made available in the client.
+
+## Security
+
+### Secure communication
+
+All api requests must use https.
+
+### Authentication Schemes
+
++ Basic (apikey)
+
+    You must provide an API key, which is a unique identifier for your account, as well as an application identifier that helps to
+    track which of your applications is making calls to the API.
+    + Headers
+        + Authorization: Basic YourApiKey
+
+
+##Group Base Types
+## Address [/check/address]
+An address contains information about a physical address for pick-up and delivery pruposes
+
++ Attributes (object)
+    + postal_code: 08022 (required, string)
+    + street_type: Pza. (optional, string)
+    + street_name: Urquinaona (optional, string)
+    + street_number: 5 (optional, string)
+    + floor: "4º" (optional, string), 
+    + door: "1ª" (optional, string), 
+    + stair_building: "Escalera A" (optional, string),
+    + city: Barcelona (optional, string)
+    + country_code: ES (required, string)
+    + elevator: 1 (optional, number) 
+    + coordinates (optional)
+        + latitude: 41.123456 (required, number)
+        + longitude: 2.123456 (required, number)
+
+### Check if an Address is valid [POST /check/address]
++ Attributes (Address)
+        
++ Response 204
+    
++ Response 400 (application/json)
+    Invalid Address
+    + Body
+    
+            {
+                "status": "error",
+                "error": "The address is invalid"
+            }
+    
+
+## Product [/check/product]
+
++ Attributes (object)
+    + name: box (required, string) - should be set to box for Ulabox requests
+    + type: dry (required, string) - dry or cold, describes the type of product
+    + quantity: 8 (required, number)
+    + quantity_estimated: true (optional, boolean)
+    + weight_kg: 4.5 (optional, number)
+
+### Check if a Product is valid [POST /check/product]
++ Attributes (Product)
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Product / malformatted
+    + Body
+    
+            {
+                "status": "error",
+                "error": "The product is missing weight information"
+            }
+
+## Shopper [/check/shopper]
+
++ Attributes (object)
+    + shopper_number: KCWS5492344 (required, string) - shopper identifyer in client system
+    + name: David (required, string) - name of the shopper
+    + surname: Lopez (required, string) - surname of the shopper
+    + email: david.lopez@gmail.com (required, string) - email of the shopper
+    + phone: 665 005 493 (optional, string) - phone of the shopper
+
+### Check if Shopper is valid [POST /check/shopper]
++ Attributes (Shopper)
+
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Shopper / malformatted
+    + Body
+    
+            {
+                "status": "error",
+                "error": "The shopper misses name information"
+            }
+
+## Capacity [/check/capacity]
+
++ Attributes (object)
+    + type: dry (required, string) - dry or cold, describes the type of product it can hold
+    + quantity: 8 (required, number) - describes the number of products it can hold
+
+### Check if a Capacity is valid [POST /check/capacity]
++ Attributes (Capacity)
+
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Product / malformatted
+    + Body
+    
+            {
+                "status": "error",
+                "error": "The capacity is missing quantity information"
+            }
+
+
+
+## TimeWindow [/time_windows] 
+
++ Attributes (object)
+    + `start_time`: `2016-03-29T15:19:00+01:00` (required, string) ISO8601 time at which the window starts
+    + `end_time`: `2016-03-29T15:37:00+01:00` (required, string) ISO8601 time at which the window ends
+
+### Check if a Time Window is valid [POST /check/time_window]
++ Attributes (TimeWindow)
+
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Time Window
+    + Body
+    
+            {
+                "status": "error",
+                "error": "start time is earlier than end time"
+            }
+
+## VehicleCategory [/vehicle_categories]    
+
++ Attributes (object)
+    + `name`: TRUCK_3500 (required, string) name of the vehicle category
+    
+
+### Check if a Vehicle Category is valid [POST /check/vehicle_category]
++ Attributes (VehicleCategory)
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid VehicleCategory
+    + Body
+    
+            {
+                "status": "error",
+                "error": "Unknown option speed"
+            }
+
+## Vehicle [/vehicle]   
+
++ Attributes (object)
+    + `vehicle_number`: BCN_VAN_1 (optional, string)
+    + capacity (required, array[Capacity]) - list describing transportation areas of the vehicle
+    + type: van (optional, string)
+    + options (optional) 
+        + efficiency: 1.2 (optional, number)
+        + helpers: 1 (optional, number)
+    + `vehicle_category`: TRUCK_3500 (required, string) name of the vehicle category related
+
+### Check if a Vehicle is valid [POST /check/vehicle]
++ Attributes (Vehicle)
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Vehicle
+    + Body
+    
+            {
+                "status": "error",
+                "error": "Unknown option speed"
+            }
+            
+## Area [/areas]    
+
++ Attributes (object)
+    + `id`: 29 (required, string)
+    + `name`: BCN (optional, string)
+    + `postal_codes` (optional, array)
+
+### Check if an Area is valid [POST /check/area]
+
+    + Attributes (Area)
+    + Body
+
+            {
+                "id" : "11",
+                "name": "BCN",
+                "postal_codes": [
+                    "08001", 
+                    "08002", 
+                    "08003", 
+                    "08004", 
+                    "08005", 
+                    "08006"
+                ]
+            }
+
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Area
+    + Body
+    
+            {
+                "status": "error",
+                "error": "Incorrect postal code"
+            }
+
+
+## Step [/steps] 
+
++ Attributes (object)
+    + `id` (required, number) 
+    + `delivery_window` (required, TimeWindow) order delivery window
+    + `order` (required, Order) order coverd by this step
+    + `estimated_delivery_time` (optional, string)
+    + `estimated_delivery_duration` (optional, string) time spent with the customer in seconds
+    + `parking_cost` (number) number of estimated parking seconds
+    + `distance_to_arrive` (number) driving distance in meters
+    + `time_to_arrive` (number) driving time in seconds
+    + `waiting_seconds` (number) number of seconds between parking time and selected delivery time
+
+### Check if a Step is valid [POST /check/step]
++ Attributes (Step)
+    
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Step
+    + Body
+    
+            {
+                "status": "error",
+                "error": "unknown order reference"
+            }
+
+## Route [/routes]    
+
++ Attributes (object)
+    + `id`: 783 (required, string)
+    + origin (required, Address)
+    + `loading_window` (required, TimeWindow)
+    + `execution_window` (required, TimeWindow)
+    + vehicle (required, Vehicle)
+    + itinerary (required, array[Step])
+    + status: done (required, string)
+
+### Check if a Route is valid [POST /check/route]
++ Attributes (Route)
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Route
+    + Body
+    
+            {
+                "status": "error",
+                "error": "Unknown vehicle BCN_VAN_15"
+            }
+
+##Group Optimization
+
+## Order [/orders]    
+
++ Attributes (object)
+    + `id`: 2745 (required, string)
+    + order_number: AA123456 (required, string)
+    + products (required, array[Product])
+    + origin (optional, Address)
+    + destination (required, Address)
+    + `delivery_windows` (required, array[TimeWindow])
+    + shopper (optional, Shopper) - information about the shopper
+    + shift_id (optional, string)
+    + status (required, string)
+    + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
+    
+
+### Check if an Order is valid [POST /check/order]
++ Attributes (Order)
++ Response 204
+            
++ Response 400 (application/json)
+    Invalid Order
+    + Body
+    
+            {
+                "status": "error",
+                "error": "The order is invalid"
+            }
+    
+
+## Shift [/shifts]
+
+A Shift groups the orders of a specific time range and area, and has relationships with the resources that are assigned to fullfill these orders.
+
++ Attributes (object)
+    + id: 123 (required, string) Unique shift identifier
+    + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
+    + span (required, TimeWindow)
+    + status: pending (required, string) shift status
+    + area (required, Area) Area covered by this shift
+    + fleet (required, array[Vehicle]) list of vehicles assigned to this shift
+    + main_scenario (optional) 
+        + status (required, string) status of the main scenario - created, optimizing, optimized, ongoing or done
+        + selected_vehicles (required, array[string]) list of vehicle ids selected for this scenario
+    + other_scenarios (optional, array[string]) list of ids of scenarios beside the main senario
+    + time_slots (required, array[TimeWindow]) delivery time windows proposed to the shopper
+    + orders (required, array[string]) list of order ids assigned to this shift
+    
+
+### Close a Shift [PATCH /shifts/{shift_id}/close]
+
++ Parameters
+    + shift_id (required, string)
+
++ Request (application/json)
+        
++ Response 200 (application/json)
+    + Attributes
+        + id: 123 (required, string) Unique shift identifier
+        + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
+        + span (required)
+            + `start_time`: `2016-03-29T15:19:00+01:00` (required, string) ISO8601 time at which the window starts
+            + `end_time`: `2016-03-29T15:37:00+01:00` (required, string) ISO8601 time at which the window ends    
+        + status: pending (required, string) shift status
+        + area (required, Area) Area covered by this shift
+        + fleet (required, array[Vehicle]) list of vehicles assigned to this shift
+        + main_scenario (optional) 
+            + status (required, string) status of the main scenario - created, optimizing, optimized, ongoing or done
+            + selected_vehicles (required, array[string]) list of vehicle ids selected for this scenario
+        + other_scenarios (optional, array[string]) list of ids of scenarios beside the main senario
+        + time_slots (required, array[TimeWindow]) delivery time windows proposed to the shopper
+        + orders (required, array[string]) list of order ids assigned to this shift    
+    + Body
+    
+            {
+                "span":
+                {
+                    "start_time": "2016-03-17T15:00:00+0100",
+                    "end_time": "2016-03-17T23:00:00+0100"
+                },
+                "status": "closed",
+                "area": {
+                    "id": "59",
+                    "name": "BCN"
+                },
+                "fleet":
+                [
+                    {
+                        "vehicle_number": "BCN_VAN_1",
+                        "capacities" : 
+                        [
+                            {
+                                "type": "dry",
+                                "quantity": 30
+                            },
+                            {
+                                "type": "cold",
+                                "quantity": 30
+                            }
+                        ],
+                        "vehicle_category": "TRUCK_3500"
+                    },
+                    {
+                        "vehicle_number": "BCN_VAN_2",
+                        "capacities" : 
+                        [
+                            {
+                                "type": "dry",
+                                "quantity": 30
+                            },
+                            {
+                                "type": "cold",
+                                "quantity": 30
+                            }
+                        ],
+                        "options":
+                        {
+                            "helpers": 1
+                        },
+                        "vehicle_category": "TRUCK_3500"
+                    }
+                ],
+                "time_slots":
+                [
+                    {
+                        "start_time": "2016-03-17T15:00:00+0100",
+                        "end_time": "2016-03-17T27:00:00+0100"
+                    },
+                    {
+                        "start_time": "2016-03-17T16:00:00+0100",
+                        "end_time": "2016-03-17T28:00:00+0100"
+                    },
+                    {
+                        "start_time": "2016-03-17T16:00:00+0100",
+                        "end_time": "2016-03-17T21:00:00+0100"
+                    }
+                ],
+                "orders":["324", "309", "343"]
+            }
+    
+    
++ Response 404
+
+
+### Get Shift Roadmap [GET /shifts/{shift_id}/roadmap]
+        
++ Response 200 (application/json)
+        
+        {
+            "unreached_orders": ["5732", "5749"],
+            "unused_vehicles": [],
+            "routes": 
+            [
+                {
+                    "id": 7654,
+                    "delivery_window": 
+                    {
+                        "start_time": "2016-03-17T09:00:00+0100",
+                        "end_time": "2016-03-17T12:15:00+0100"
+                    },
+                    "vehicle": 
+                    {
+                        "vehicle_number": "BCN_VAN_1",
+                        "capacities" : 
+                        [
+                            {
+                                "type": "dry",
+                                "quantity": 30
+                            },
+                            {
+                                "type": "cold",
+                                "quantity": 30
+                            }
+                        ],
+                        "vehicle_category": "TRUCK_3500"
+                    }
+                },
+                {
+                    "id": 7655,
+                    "delivery_window": 
+                    {
+                        "start_time": "2016-03-17T09:10:00+0100",
+                        "end_time": "2016-03-17T11:45:00+0100"
+                    },
+                    "vehicle": 
+                    {
+                        "vehicle_number": "BCN_VAN_2",
+                        "capacities" : 
+                        [
+                            {
+                                "type": "dry",
+                                "quantity": 30
+                            },
+                            {
+                                "type": "cold",
+                                "quantity": 30
+                            }
+                        ],
+                        "options":
+                        {
+                            "helpers": 1
+                        },
+                        "vehicle_category": "TRUCK_3500"
+                    }
+                }
+            ]
+        }
+        
++ Response 404
+
+##Group Callbacks
