@@ -128,7 +128,7 @@ An address contains information about a physical address for pick-up and deliver
 ## Warehouse [/warehouse]   
 
 + Attributes (object)
-    + `id`: 29 (required, string) warehouse uuid
+    + `id`: `8a538a71-db03-43ed-b641-32364ad57e74` (required, string) warehouse uuid
     + `area`: BARCELONA (optional, string)
     + location (required, Address)
 
@@ -175,7 +175,7 @@ An address contains information about a physical address for pick-up and deliver
 ## Route [/routes]    
 
 + Attributes (object)
-    + `id`: 783 (required, string)
+    + `id`: `af41c247-5a71-4d20-add2-78542d19af2d` (required, string) route UUID
     + `execution_window` (required, TimeWindow)
     + itinerary (required, array[Step])
     + status: done (required, string)
@@ -195,7 +195,7 @@ An address contains information about a physical address for pick-up and deliver
 
 ### Get a Route [GET /routes/{route_id}]
 + Parameters
-    + route_id (required, string) - The Route id
+    + route_id (required, string) - The Route idU
 + Response 200 (application/json)
     + Attributes (Route)
 
@@ -205,7 +205,7 @@ An address contains information about a physical address for pick-up and deliver
 ## Order [/orders]    
 
 + Attributes (object)
-    + `id`: 43bcb4c5-47d5-4cff-9331-f48d381501bd (required, string)
+    + `id`: `43bcb4c5-47d5-4cff-9331-f48d381501bd` (required, string) Unique order identifier in UUID format
     + order_number: AA123456 (required, string) The order identifyer in eCommerce
     + products (required, array[Product])
     + destination (required, Address)
@@ -273,7 +273,7 @@ An address contains information about a physical address for pick-up and deliver
 A Shift groups the orders of a specific warehouse, and has relationships with the resources that are assigned to fullfill these orders.
 
 + Attributes (object)
-    + id: d6b24e46-1ae0-4833-a22d-ad3e6399a8ad (required, string) Unique shift identifier
+    + `id`: `d6b24e46-1ae0-4833-a22d-ad3e6399a8ad` (required, string) Unique shift identifier in UUID format
     + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
     + `loading_window` (optional, TimeWindow)
     + span (optional, TimeWindow)
@@ -287,11 +287,11 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Request (application/json)
 
 + Attributes
-    + id: d6b24e46-1ae0-4833-a22d-ad3e6399a8ad (required, string) Unique shift identifier
+    + `id`: `d6b24e46-1ae0-4833-a22d-ad3e6399a8ad` (required, string) Unique shift identifier
     + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
     + `loading_window` (optional, TimeWindow) time window during which the trucks will be loading the orders
     + span (optional, TimeWindow) time window during which the trucks will be working
-    + warehouse_id: ee1a43c0-c872-4480-abc1-4115b8aeeb80 (required, string) id of the warehouse managing this shift
+    + `warehouse_id`: `ee1a43c0-c872-4480-abc1-4115b8aeeb80` (required, string) id of the warehouse managing this shift
     + orders (optional, array[Order]) Orders for which we optimize deliveries
     
 + Response 201 (application/json)
