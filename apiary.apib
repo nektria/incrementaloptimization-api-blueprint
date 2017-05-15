@@ -257,7 +257,7 @@ An address contains information about a physical address for pick-up and deliver
 + Attributes
     + action: block (required, string)
     
-+ Response 202 (application/json)
++ Response 202
 
 
 ## Shift [/shifts]
@@ -301,7 +301,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Attributes
     + action: close (required, string)
         
-+ Response 202 (application/json)
++ Response 202
     
 + Response 404
 
@@ -326,7 +326,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
         + route_id (required, string)
         + orders (required, array[string])
         
-+ Response 202 (application/json)
++ Response 202
     
 + Response 404
 
@@ -337,7 +337,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Attributes (object)
     + action: close (required, string)
 
-+ Response 200 (application/json)
++ Response 202
     
 + Response 404
 
@@ -350,6 +350,6 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Attributes
     + action: assign (required, string)
         
-+ Response 202 (application/json)
++ Response 202
     
 + Response 404
