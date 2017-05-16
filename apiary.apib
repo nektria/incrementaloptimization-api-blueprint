@@ -316,6 +316,8 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
         
 ##Group Callbacks
 
+## Scale Shifts [/scale-shifts]    
+
 ### Incremental Optimization Performed [PUT /shifts/{shift_id}]
 + Parameters
     + shift_id (required, string)
@@ -340,6 +342,8 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Response 202
     
 + Response 404
+
+## Scale Orders [/scale-orders]    
 
 ### Assign an Order to a Route [PATCH /shifts/{shift_id}/routes/{route_id}/orders/{order_id}]
 
