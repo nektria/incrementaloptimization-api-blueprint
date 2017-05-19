@@ -248,14 +248,14 @@ An address contains information about a physical address for pick-up and deliver
     + Body
 
 
-### Block an Order [PATCH /incremental-shifts/{shift_id}/orders/{order_id}]
+### Actions on an Order [PATCH /incremental-shifts/{shift_id}/orders/{order_id}]
 + Parameters
     + shift_id (required, string)
     + order_id (required, string)
 
 + Request (application/json)
 + Attributes
-    + action: block (required, string)
+    + action: ´block / cancel / prepare´ (required, string)
     
 + Response 202
 
