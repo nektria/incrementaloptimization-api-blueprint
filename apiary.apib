@@ -219,7 +219,7 @@ An address contains information about a physical address for pick-up and deliver
                 "error": "The destination is compulsory"
             }
     
-### Create an Order (Optimize Incrementally) [PUT /incremental-shifts/{shift_id}/orders/{order_id}]
+### Create an Order [PUT /incremental-shifts/{shift_id}/orders/{order_id}]
 + Parameters
     + shift_id (required, string)
     + order_id (required, string)
@@ -291,14 +291,14 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
             Location: /incremental-shifts/{shift_id}
         
         
-### Close a Shift [PATCH /incremental-shifts/{shift_id}]
+### Actions on a Shift [PATCH /incremental-shifts/{shift_id}]
 
 + Parameters
     + shift_id (required, string)
 
 + Request (application/json)
 + Attributes
-    + action: close (required, string)
+    + action: close / optimize (required, string)
         
 + Response 202
     
@@ -316,20 +316,6 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 ##Group Callbacks
 
 ## Scale Shifts [/scale-shifts]    
-
-### Incremental Optimization Performed [PUT /shifts/{shift_id}]
-+ Parameters
-    + shift_id (required, string)
-
-+ Request (application/json)
-+ Attributes (object)
-    + routes (array, required) 
-        + route_id (required, string)
-        + orders (required, array[string])
-
-+ Response 202
-    
-+ Response 404
 
 ### Optimization closed [PATCH /shifts/{shift_id}]
 + Parameters
