@@ -219,13 +219,13 @@ An address contains information about a physical address for pick-up and deliver
                 "error": "The destination is compulsory"
             }
     
-### Create an Order [PUT /incremental-shifts/{shift_id}/orders/{order_id}]
+### Create an Order [POST /incremental-shifts/{shift_id}/orders]
 + Parameters
     + shift_id (required, string)
-    + order_id (required, string)
     
 + Request (application/json)
 + Attributes 
+    + id (required, string)
     + products (required, array[Product])
     + destination (required, Address)
     + `delivery_window` (required, array[TimeWindow])
@@ -315,7 +315,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
         
 ##Group Callbacks
 
-## Scale Shifts [/scale-shifts]    
+## Scale Shifts [/scale-shifts]
 
 ### Optimization closed [PATCH /shifts/{shift_id}]
 + Parameters
