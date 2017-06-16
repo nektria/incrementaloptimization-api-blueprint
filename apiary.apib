@@ -63,7 +63,7 @@ An address contains information about a physical address for pick-up and deliver
 ## Product [/check/product]
 
 + Attributes (object)
-    + name: box (required, string) - should be set to box for Ulabox requests
+    + name: box (required, string) - box, or items
     + type: dry (required, string) - dry or cold, describes the type of product
     + quantity: 8 (required, number)
     + quantity_estimated: true (optional, boolean)
@@ -268,12 +268,12 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
     + `id`: `d6b24e46-1ae0-4833-a22d-ad3e6399a8ad` (required, string) Unique shift identifier in UUID format
     + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
     + `loading_window` (optional, TimeWindow)
-    + span (optional, TimeWindow)
+    + span (required, TimeWindow)
     + status: pending (required, string) shift status
     + main_scenario_status: optimizing (optional) 
     + warehouse (required, Warehouse) Warehouse covering this shift
     + orders (required, array[string]) list of order ids assigned to this shift
-    
+ 
 ### Create a Shift [POST /incremental-shifts]
 
 + Request (application/json)
@@ -282,7 +282,7 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
     + `id`: `d6b24e46-1ae0-4833-a22d-ad3e6399a8ad` (required, string) Unique shift identifier
     + name: `2016-03-29 mañana` (optional, string) Custom name of this shift
     + `loading_window` (optional, TimeWindow) time window during which the trucks will be loading the orders
-    + span (optional, TimeWindow) time window during which the trucks will be working
+    + span (required, TimeWindow) time window during which the trucks will be working
     + `warehouse_id`: `ee1a43c0-c872-4480-abc1-4115b8aeeb80` (required, string) id of the warehouse managing this shift
     
 + Response 201 (application/json)
