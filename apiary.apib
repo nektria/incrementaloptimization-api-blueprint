@@ -218,7 +218,7 @@ An address contains information about a physical address for pick-up and deliver
                 "status": "error",
                 "error": "The destination is compulsory"
             }
-    
+
 ### Create an Order [POST /incremental-shifts/{shift_id}/orders]
 + Parameters
     + shift_id (required, string)
@@ -259,6 +259,15 @@ An address contains information about a physical address for pick-up and deliver
     
 + Response 202
 
+### Get an Order [GET /incremental-shifts/{shift_id}/orders/{order_id}]
++ Parameters
+    + shift_id (required, string)
+    + order_id (required, string)
+
++ Request (application/json)
+    
++ Response 200 (application/json)
+    + Attributes (Order)
 
 ## Shift [/shifts]
 
@@ -312,7 +321,16 @@ A Shift groups the orders of a specific warehouse, and has relationships with th
 + Response 200 (application/json)
     + Attributes 
         + list (array[Route])
-        
+
+### Get a Shift [GET /incremental-shifts/{shift_id}]
++ Parameters
+    + shift_id (required, string)
+
++ Request (application/json)
+    
++ Response 200 (application/json)
+    + Attributes (Shift)
+
 ##Group Callbacks
 
 ## Scale Shifts [/scale-shifts]
