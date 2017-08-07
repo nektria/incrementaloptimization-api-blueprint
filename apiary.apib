@@ -204,7 +204,7 @@ An address contains information about a physical address for pick-up and deliver
     + `delivery_window` (required, TimeWindow)
     + shopper (required, Shopper) - information about the shopper
     + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
-    
+
 
 ### Check if an Order is valid [POST /check/order]
 + Attributes (Order)
@@ -231,6 +231,8 @@ An address contains information about a physical address for pick-up and deliver
     + `delivery_window` (required, TimeWindow)
     + shopper (required, Shopper) - information about the shopper
     + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
+    + order_number (required, string)
+    
     
 + Response 201 (application/json)
     + Headers
