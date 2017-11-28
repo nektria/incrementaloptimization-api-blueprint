@@ -271,6 +271,36 @@ An address contains information about a physical address for pick-up and deliver
 + Response 200 (application/json)
     + Attributes (Order)
 
+### Update an Order [PUT /incremental-shifts/{shift_id}/orders/{order_id}]
++ Parameters
+    + shift_id (required, string)
+    + order_id (required, string)
+    
++ Request (application/json)
++ Attributes 
+    + target_shift_id (required, string)
+    + products (required, array[Product])
+    + destination (required, Address)
+    + `delivery_window` (required, TimeWindow)
+    + shopper (required, Shopper) - information about the shopper
+    + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
+
+    
++ Response 201 (application/json)
+    + Headers
+    
+            Location: /orders/{order_id}
+
++ Response 400
+    Returned if there is any parameter missing or with wrong type or format
+    + Body
++ Response 404
+    Returned if there is no order with given order_id and shift_id
+    + Body
++ Response 500
+    Returned if an error occurred storing the order
+    + Body
+
 ## Shift [/shifts]
 
 A Shift groups the orders of a specific warehouse, and has relationships with the resources that are assigned to fullfill these orders.
