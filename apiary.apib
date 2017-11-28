@@ -271,7 +271,7 @@ An address contains information about a physical address for pick-up and deliver
 + Response 200 (application/json)
     + Attributes (Order)
 
-### Update an Order [PUT /incremental-shifts/{shift_id}/orders/{order_id}]
+### Update an Order Delivery [POST /incremental-shifts/{shift_id}/orders/{order_id}/update-delivery]
 + Parameters
     + shift_id (required, string)
     + order_id (required, string)
@@ -279,14 +279,10 @@ An address contains information about a physical address for pick-up and deliver
 + Request (application/json)
 + Attributes 
     + target_shift_id (required, string)
-    + products (required, array[Product])
-    + destination (required, Address)
     + `delivery_window` (required, TimeWindow)
-    + shopper (required, Shopper) - information about the shopper
-    + priority (optional, number) - priority, on a scale from 1 (high) to 10 (low).
 
     
-+ Response 201 (application/json)
++ Response 202 (application/json)
     + Headers
     
             Location: /orders/{order_id}
